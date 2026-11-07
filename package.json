@@ -1,0 +1,12 @@
+{
+  "name": "auralia-music-player",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Auralia: página para escuchar música con sesiones generativas en el navegador",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
