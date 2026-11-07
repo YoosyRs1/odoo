@@ -3,7 +3,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const ROOT = path.join(__dirname, 'public');
+const ROOT = path.join(__dirname, process.env.PUBLIC_DIR || 'music-player');
 const PORT = Number(process.env.PORT) || 3000;
 
 const MIME = {

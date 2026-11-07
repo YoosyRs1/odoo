@@ -9,7 +9,7 @@ ENV NODE_ENV=production \
 RUN apk upgrade --no-cache
 
 COPY --chown=node:node server.js ./server.js
-COPY --chown=node:node music-player ./public
+COPY --chown=node:node music-player ./music-player
 
 USER node
 
