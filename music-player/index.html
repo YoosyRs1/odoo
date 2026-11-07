@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Auralia: reproductor de música con sesiones generativas en vivo y tus propios archivos de audio." />
+    <title>Auralia · Escucha música</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="aura" aria-hidden="true">
+      <span class="aura-a"></span>
+      <span class="aura-b"></span>
+      <span class="aura-c"></span>
+    </div>
+
+    <main class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M9 18V5l11-2v13" />
+              <circle cx="6" cy="18" r="3" />
+              <circle cx="17" cy="16" r="3" />
+            </svg>
+          </span>
+          Auralia
+        </div>
+        <p class="tagline">Sesiones generativas en vivo · se sintetizan en tu navegador</p>
+      </header>
+
+      <section class="player-card" id="player-card">
+        <div class="cover" id="cover">
+          <div class="cover-glow"></div>
+          <div class="vinyl" id="vinyl">
+            <div class="vinyl-label">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+                <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z" />
+              </svg>
+            </div>
+          </div>
+          <div class="cover-badge" id="cover-badge">EN VIVO</div>
+        </div>
+
+        <div class="info">
+          <p class="eyebrow" id="now-eyebrow">Listo para escuchar</p>
+          <h1 id="track-title">Amanecer Neón</h1>
+          <p class="artist" id="track-artist">Auralia · sintetizado en vivo</p>
+
+          <canvas id="visualizer" aria-hidden="true"></canvas>
+
+          <div class="progress-wrap">
+            <input
+              type="range"
+              id="progress"
+              min="0"
+              max="1000"
+              step="1"
+              value="0"
+              aria-label="Progreso de la canción"
+            />
+            <div class="times">
+              <span id="cur-time">0:00</span>
+              <span id="dur-time">0:00</span>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button type="button" class="ctl" id="prev-btn" aria-label="Canción anterior" title="Anterior">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+                <path d="M6 5h2v14H6zM20 5v14l-11-7z" />
+              </svg>
+            </button>
+
+            <button type="button" class="play" id="play-btn" aria-label="Reproducir" title="Reproducir / Pausar (espacio)">
+              <svg class="icon-play" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              <svg class="icon-pause" viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true">
+                <path d="M7 5h4v14H7zM13 5h4v14h-4z" />
+              </svg>
+            </button>
+
+            <button type="button" class="ctl" id="next-btn" aria-label="Canción siguiente" title="Siguiente">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+                <path d="M16 5h2v14h-2zM4 5l11 7-11 7z" />
+              </svg>
+            </button>
+
+            <div class="volume">
+              <button type="button" class="ctl small" id="mute-btn" aria-label="Silenciar" title="Silenciar">
+                <svg class="icon-volume" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                  <path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z" />
+                </svg>
+                <svg class="icon-muted" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                  <path d="M4 9v6h4l5 4V5L8 9H4zm15.7 3 2.1-2.1-1.4-1.4-2.1 2.1-2.1-2.1-1.4 1.4 2.1 2.1-2.1 2.1 1.4 1.4 2.1-2.1 2.1 2.1 1.4-1.4-2.1-2.1z" />
+                </svg>
+              </button>
+              <input
+                type="range"
+                id="volume"
+                min="0"
+                max="100"
+                step="1"
+                value="75"
+                aria-label="Volumen"
+              />
+            </div>
+          </div>
+
+          <p class="kbd-hint">
+            Atajos: <kbd>espacio</kbd> reproducir/pausa · <kbd>←</kbd> <kbd>→</kbd> retroceder/avanzar
+          </p>
+        </div>
+      </section>
+
+      <section class="playlist-card">
+        <header>
+          <h2>Lista de reproducción</h2>
+          <span id="track-count" class="count">5 pistas</span>
+        </header>
+
+        <ol id="playlist" class="playlist"></ol>
+
+        <label class="upload" for="file-input">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M12 16V4m0 0L7 9m5-5 5 5M4 20h16" />
+          </svg>
+          Añade tus propios archivos
+          <input type="file" id="file-input" accept="audio/*" multiple hidden />
+        </label>
+        <p class="hint">
+          Arrastra archivos de audio a la página o elige uno. Todo se reproduce en tu navegador:
+          ningún archivo se sube a un servidor.
+        </p>
+      </section>
+    </main>
+
+    <div class="drop-overlay" id="drop-overlay" aria-hidden="true">
+      <p>Suelta tu música aquí 🎵</p>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
