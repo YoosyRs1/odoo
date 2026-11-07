@@ -1,18 +1,25 @@
-FROM node:26-alpine
+FROM python:3.13-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PORT=3000 \
+    PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /app
 
-ENV NODE_ENV=production \
-    PORT=3000
+# Paquetes del sistema al día (OpenSSL, libssl, zlib…) antes de bajar privilegios.
+RUN apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --uid 10001 appuser
 
-# Actualiza los paquetes del sistema (OpenSSL, musl, etc.) antes de bajar privilegios.
-RUN apk upgrade --no-cache
+COPY --chown=appuser:appuser serve.py ./serve.py
+COPY --chown=appuser:appuser music-player ./music-player
 
-COPY --chown=node:node server.js ./server.js
-COPY --chown=node:node music-player ./music-player
-
-USER node
+USER appuser
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD python3 -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:3000/').status==200 else 1)"
+
+CMD ["python3", "serve.py"]
